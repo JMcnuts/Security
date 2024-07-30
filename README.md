@@ -1535,6 +1535,7 @@ execute the script.
 ./func <<<$(python linbuffer.py)
 
 ```
+```
 file func
 strings func 
 chmod u+x func

